@@ -1,0 +1,34 @@
+{
+  "name": "market-tracker",
+  "version": "1.0.0",
+  "description": "Tracks quotes of market assets such as stocks, currencies and cryptocurrencies",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manoelcampos/market-tracker.git"
+  },
+  "keywords": [
+    "market",
+    "data",
+    "assets",
+    "stocks",
+    "currency",
+    "cryptocurrency",
+    "tracker"
+  ],
+  "author": "Manoel Campos da Silva Filho <manoelcampos@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/manoelcampos/market-tracker/issues"
+  },
+  "homepage": "https://github.com/manoelcampos/market-tracker#readme",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "debug": "^4.3.1",
+    "node-notifier": "^8.0.0"
+  }
+}
