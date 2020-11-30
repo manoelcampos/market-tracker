@@ -20,3 +20,47 @@ npm install
 # Runs app in background
 npm start &
 ```
+
+## Configuration
+
+The [config.json](config.json) file has the following structure that is explained
+below.
+
+```javascript
+{
+    //Timer interval (in seconds) to check for assets quotes variation.
+    "trackIntervalSecs": 1800,
+
+    /*Default percentage (between [0..100%]) of variation (up or down) 
+    that one of your assets should have so you are notified. 
+    If an asset doesn't have it own configuration for this parameter,
+    this value is used instead.*/
+    "defaultPercentVariationNotification": 10.0,
+
+    /* List of stocks you want to track. 
+    Add a new entry for each stock. */
+    "stocks": [
+        {
+            /* Ticker of the stock you want to track 
+            (for Brazilian stocks, you need to add .sa suffix).*/
+            "ticker": "MGLU3.sa",
+
+            /* The base value you want to compare the current stock quote with.
+            This way, if there is the desired variation on the stock quote,
+            you will be notified.*/
+            "baseValue": 20.00
+        },
+        {
+            "ticker": "VVAR3.sa",
+
+            /*Percentage (between [0..100%]) of variation (up or down) 
+            that this particular stock should have so you are notified. 
+            If the stock doesn't have this configuration,
+            the defaultPercentVariationNotification is used instead.*/
+            "percentVariationNotification": 15.0,
+
+            "baseValue": 15.00
+        }
+    ]
+}
+```
