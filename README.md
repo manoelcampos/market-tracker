@@ -7,29 +7,29 @@ It works for Windows, Linux and macOS.
 It uses Yahoo Finance data for stocks.
 **This way, the app cannot be used for commercial porpuses.**
 
-## Requirements
+## 1. Requirements
 
 You just need [Node.js](http://nodejs.org) installed.
 
-## Download
+## 2. Download
 
-You can download the project as a [zip file here](https://github.com/manoelcampos/market-tracker/archive/master.zip) or use git for it:
+You can download the project as a [zip file here](https://github.com/manoelcampos/market-tracker/archive/master.zip) or use git for that:
 
 ```bash
 git clone https://github.com/manoelcampos/market-tracker.git
 ```
 
-## Install and run
+## 3. Install and run
 
 ```bash
 # Install dependencies
 npm install
 
-# Runs app in background
+# Run the app in background
 npm start &
 ```
 
-## Configuration
+## 4. Configuration
 
 The [config.json](config.json) file has the following structure that is explained
 below.
@@ -72,3 +72,5 @@ below.
     ]
 }
 ```
+
+When you update the config file and save, it's reloaded automatically.
