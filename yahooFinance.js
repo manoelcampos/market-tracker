@@ -15,7 +15,7 @@ const getYahooFinanceQuote = async (stock) => {
     }
 
     const result = res.data?.quoteSummary?.result;
-    if(!result || result.lenght === 0 || !result[0].financialData?.currentPrice?.raw){
+    if(!result || result.length === 0 || !result[0].financialData?.currentPrice?.raw){
         const error = `Quote for ${stock.ticker} cannot be got`
         debug(error)
         throw new Error(error);
