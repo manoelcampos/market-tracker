@@ -1,9 +1,11 @@
-//const fs = require('fs');
+const fs = require('fs');
 const debug = require('debug')('tracker')
 const axios = require('axios');
 const notifier = require('node-notifier');
-const config = require('./config');
+const { exit } = require('process');
 
+const CONFIG_FILE_PATH = './config.json';
+const CONFIG_FILE_OPTIONS = {encoding: "utf-8"};
 
 const getYahooFinanceQuote = async (ticker) => {
     const yahooFinanceUrl = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.comMGLU3.SA?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.com`;
@@ -14,7 +16,7 @@ const getYahooFinanceQuote = async (ticker) => {
 
     const result = res.data.quoteSummary.result;
     if(!result || result.lenght == 0){
-        const error = `Quotação não obtida para ${ticker}`
+        const error = `Quote for ${ticker} cannot be got`
         debug(error)
         throw new Error(error);
     }
@@ -31,9 +33,9 @@ const getYahooFinanceQuotes = async (tickerArray) => {
 
     const msg = successResults.map(res => `${res.ticker}: ${res.quote}`).join('\n');
     
-    const errorCount = tickerArray.length - successResults.length;
-    const ativos = errorCount == 1 ? 'ativo' : 'ativos';
-    const error = errorCount > 0 ? `\nErro ao consultar ${errorCount} ${ativos}` : ''
+    const errors = tickerArray.length - successResults.length;
+    const assets = errors == 1 ? 'asset' : 'assets';
+    const error = errors > 0 ? `\nError when tracking ${errors} ${assets}` : ''
 
     notifier.notify({
         title: `Market Tracker`,
@@ -41,15 +43,49 @@ const getYahooFinanceQuotes = async (tickerArray) => {
     });
 }
 
-const start = async () => {
-    debug(`Monitorando ${config.assets.length} ativos`)
+let config;
+
+const track = async () => {
+    if(!config)
+        return;
+
+    debug(`Tracking ${config.assets.length} assets`)
     try{
         const tickers = config.assets.map(asset => asset.ticker);
         await getYahooFinanceQuotes(tickers);
     } catch(error){
         debug(error);
     }
-} 
+}
 
-start();
-setInterval(() => start(), config.trackIntervalSecs*1000);
+let intervalTimeout
+
+const scheduleTracking = (error, configData) => {
+    if(error){
+        debug(`Error loading config file. You need to check and restart the app: ${error}`);
+        exit(-1);
+    }
+
+    const hadPreviousConfig = config;
+    config = JSON.parse(configData);
+    if(!hadPreviousConfig){
+        track();
+    }
+    
+    if(intervalTimeout){
+        clearInterval(intervalTimeout);
+    }
+    intervalTimeout = setInterval(track, config.trackIntervalSecs*1000);    
+};
+
+const loadConfigFile = () => fs.readFile(CONFIG_FILE_PATH, CONFIG_FILE_OPTIONS, scheduleTracking);
+
+loadConfigFile();
+
+const reloadConfigFile = (eventType, filename) => {
+    loadConfigFile();
+    debug(`Reloading ${CONFIG_FILE_PATH} after changes.`);
+}
+
+fs.watch(CONFIG_FILE_PATH, CONFIG_FILE_OPTIONS, reloadConfigFile);
+
