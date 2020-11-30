@@ -1,5 +1,5 @@
 {
-    "trackIntervalSecs": 10.0,
+    "trackIntervalSecs": 1800,
     "defaultPercentVariationNotification": 10.0,
     "stocks": [
         {
