@@ -2,7 +2,6 @@ const fs = require('fs');
 const debug = require('debug')('tracker')
 const axios = require('axios');
 const notifier = require('node-notifier');
-const { exit } = require('process');
 
 const CONFIG_FILE_PATH = 'config.json';
 const CONFIG_FILE_OPTIONS = {encoding: "utf-8"};
