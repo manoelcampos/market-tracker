@@ -4,7 +4,7 @@ const axios = require('axios');
 const notifier = require('node-notifier');
 const { exit } = require('process');
 
-const CONFIG_FILE_PATH = './config.json';
+const CONFIG_FILE_PATH = 'config.json';
 const CONFIG_FILE_OPTIONS = {encoding: "utf-8"};
 const DEFAULT_PERCENT_VARIATION = 10;
 
@@ -86,7 +86,18 @@ const scheduleTracking = (error, configData) => {
     }
 
     const hadPreviousConfig = config;
-    config = JSON.parse(configData);
+    try{
+        config = JSON.parse(configData);
+    } catch(error){
+        config = null;
+        notifier.notify({
+            title: `Market Tracker`,
+            message: `Error trying to reload the ${CONFIG_FILE_PATH}: ${error}`
+        });
+
+        return;
+    }
+
     if(!hadPreviousConfig){
         track();
     }
