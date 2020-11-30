@@ -5,6 +5,10 @@ const { hasMinQuoteVariation, getVariationMsg } = require('./util');
 
 let config;
 
+/**
+ * 
+ * @param {object} stocks A stock object, as defined into the config file, to get its quote.
+ */
 const getYahooFinanceQuote = async (stock) => {
     const yahooFinanceUrl = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${stock.ticker}?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.comMGLU3.SA?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.com`;
     const res = await axios.get(yahooFinanceUrl);
@@ -23,6 +27,12 @@ const getYahooFinanceQuote = async (stock) => {
 }
 
 //TODO dá pra enviar uma lista de ativos para o YahooFinance
+/**
+ * 
+ * @param {array} stocks Array of stock objects, as defined into the config file, to get their quotes
+ * @param {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
+ *                                         on their quotes. 
+ */
 const getYahooFinanceQuotes = async (stocks, onlyExpectedVariation = false) => {
     const results = await Promise.allSettled(stocks.map(stock => getYahooFinanceQuote(stock)));
     const successStocks = 
@@ -47,6 +57,12 @@ const getYahooFinanceQuotes = async (stocks, onlyExpectedVariation = false) => {
     notify(`${msg} \n*from base quote ${error}`);
 }
 
+/**
+ * Gets the quotes of stocks in the config file.
+ * @param {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
+ *                                         on their quotes. 
+ */
+
 const trackStocks = async (onlyExpectedVariation) => {
     if(!config)
         return;
@@ -61,6 +77,12 @@ const trackStocks = async (onlyExpectedVariation) => {
 
 let intervalTimeout
 
+/**
+ * Schedules the tracking of stocks.
+ * 
+ * @param {Error} error An error object if the config file could not be loaded or parsed
+ * @param {object} newConfig the config object read from json file
+ */
 const scheduleTracking = (error, newConfig) => {
     if(error){
         const msg = `Error loading config config file. You need to check it: ${error}`;
