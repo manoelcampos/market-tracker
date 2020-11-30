@@ -4,12 +4,12 @@
     "stocks": [
         {
             "ticker": "MGLU3.sa",
-            "baseValue": 20.00
+            "baseQuote": 20.00
         },
         {
             "ticker": "VVAR3.sa",
             "percentVariationNotification": 15.0,
-            "baseValue": 15.00
+            "baseQuote": 15.00
         }
     ]
 }

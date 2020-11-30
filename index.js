@@ -48,7 +48,7 @@ const getStockPercentVariation = (stock) => {
 }; 
 
 
-const getStockVariationPercent = stock => stock.quote/(stock.baseValue || stock.quote) - 1;
+const getStockVariationPercent = stock => stock.quote/(stock.baseQuote || stock.quote) - 1;
 
 const hasMinStockVariation = stock => Math.abs(getStockVariationPercent(stock)) >= getStockPercentVariation(stock);
 
