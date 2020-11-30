@@ -22,7 +22,7 @@ const getExpectedPercentVariation = (stock, defaultExpectedPercentVariation) => 
 
 const getActualStockPercentVariation = stock => stock.quote/(stock.baseQuote || stock.quote) - 1;
 
-const hasMinQuoteVariation = (stock, { defaultExpectedPercentVariation }) => {
+const hasMinQuoteVariation = (stock, defaultExpectedPercentVariation) => {
     return Math.abs(getActualStockPercentVariation(stock)) >= getExpectedPercentVariation(stock, defaultExpectedPercentVariation);
 }
 
