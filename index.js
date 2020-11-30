@@ -6,6 +6,7 @@ const { exit } = require('process');
 
 const CONFIG_FILE_PATH = './config.json';
 const CONFIG_FILE_OPTIONS = {encoding: "utf-8"};
+const DEFAULT_PERCENT_VARIATION = 10;
 
 const getYahooFinanceQuote = async (stock) => {
     const yahooFinanceUrl = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${stock.ticker}?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.comMGLU3.SA?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.com`;
@@ -24,6 +25,16 @@ const getYahooFinanceQuote = async (stock) => {
     return {...stock, quote: result[0].financialData.currentPrice.raw};
 }
 
+const getStockPercentVariation = (stock) => {
+    const percent = stock.percentVariationNotification || config.defaultPercentVariationNotification || DEFAULT_PERCENT_VARIATION;
+    return percent/100.0;
+}; 
+
+
+const getStockVariationPercent = stock => stock.quote/(stock.baseValue || stock.quote) - 1;
+
+const hasMinStockVariation = stock => Math.abs(getStockVariationPercent(stock)) >= getStockPercentVariation(stock);
+
 //TODO dá pra enviar uma lista de ativos para o YahooFinance
 const getYahooFinanceQuotes = async (stocks) => {
     const results = await Promise.allSettled(stocks.map(stock => getYahooFinanceQuote(stock)));
@@ -32,7 +43,15 @@ const getYahooFinanceQuotes = async (stocks) => {
         return;
     }
 
-    const msg = successStocks.map(stock => `${stock.ticker}: ${stock.quote}`).join('\n');
+    const stocksWithDesiredVariation = successStocks.filter(hasMinStockVariation);
+    debug(`Found ${stocksWithDesiredVariation.length} stocks with desired variation`);
+    if(stocksWithDesiredVariation.length == 0){
+        return;
+    }
+
+    const msg = stocksWithDesiredVariation
+                    .map(stock => `${stock.ticker}: ${stock.quote} (variation ${Math.round(getStockVariationPercent(stock)*100)}%)`)
+                    .join('\n');
     
     const errors = stocks.length - successStocks.length;
     const assets = errors == 1 ? 'asset' : 'assets';
@@ -62,8 +81,8 @@ let intervalTimeout
 
 const scheduleTracking = (error, configData) => {
     if(error){
-        debug(`Error loading config file. You need to check and restart the app: ${error}`);
-        exit(-1);
+        debug(`Error loading config file. You need to check the file: ${error}`);
+        return;
     }
 
     const hadPreviousConfig = config;

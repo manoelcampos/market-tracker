@@ -1,13 +1,15 @@
 {
-    "trackIntervalSecs": 1800,
-    "defaultPercentVariationNotification": 10,
+    "trackIntervalSecs": 10.0,
+    "defaultPercentVariationNotification": 10.0,
     "stocks": [
         {
-            "ticker": "MGLU3.sa"
+            "ticker": "MGLU3.sa",
+            "baseValue": 20.00
         },
         {
             "ticker": "VVAR3.sa",
-            "percentVariationNotification": 15
+            "percentVariationNotification": 15.0,
+            "baseValue": 15.00
         }
     ]
 }
