@@ -52,7 +52,7 @@ const getYahooFinanceQuotes = async (stocks, onlyExpectedVariation = false) => {
     
     const errors = stocks.length - successStocks.length;
     const assets = errors == 1 ? 'asset' : 'assets';
-    const error = errors > 0 ? `\nError when tracking ${errors} ${stocks}` : ''
+    const error = errors > 0 ? `\nError when tracking ${errors} ${assets}` : ''
 
     notify(`${msg} \n*from base quote ${error}`);
 }
