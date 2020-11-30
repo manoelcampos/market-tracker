@@ -57,10 +57,10 @@ const getYahooFinanceQuotes = async ({ stocks, defaultExpectedPercentVariation }
 
 /**
  * Gets the quotes of stocks in the config file.
+ * @param {object} config The configuration object from the json file
  * @param {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
  *                                         on their quotes. 
  */
-
 const trackStocks = async (config, onlyExpectedVariation) => {
     if(!config)
         return;
