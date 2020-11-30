@@ -1,6 +1,8 @@
 # Market Tracker
 
-![](macos-preview.png)
+| Starting up  | Asset quote change  |
+|---|---|
+| ![](macos-preview1.png) | ![](macos-preview2.png) |
 
 A Node.js console application to track market assets,
 currently including stocks and cryptocurrencies.
@@ -8,7 +10,7 @@ It works for Windows, Linux and macOS.
 
 It uses Yahoo Finance data for stocks.
 **This way, the app cannot be used for commercial porpuses.**
-The API from the brazilian exchange [Mercado Bitcoin](https://www.mercadobitcoin.com.br/api-doc/) used for cryptocurrencies.
+The API from the brazilian exchange [Mercado Bitcoin](https://www.mercadobitcoin.com.br/api-doc/) is used for cryptocurrencies.
 
 ## 1. Requirements
 
