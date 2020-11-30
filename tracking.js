@@ -1,6 +1,6 @@
 const debug = require('debug')('tracker:tracking');
 const notify = require('./notify');
-const yahoo = require('./yahooFinance');
+const stockService = require('./yahooFinance');
 
 let intervalTimeout
 
@@ -16,7 +16,7 @@ const getQuotes = async (config, onlyExpectedVariation) => {
 
     debug(`Tracking ${config.stocks.length} stocks`);
     try{
-        await yahoo.getYahooFinanceQuotes(config, onlyExpectedVariation);
+        await stockService.getYahooFinanceQuotes(config, onlyExpectedVariation);
     } catch(error){
         debug(error);
     }
