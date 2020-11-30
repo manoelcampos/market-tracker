@@ -1,16 +1,11 @@
 const fs = require('fs');
 const debug = require('debug')('tracker')
 const axios = require('axios');
-const notifier = require('node-notifier');
+const notify = require('./notify');
 
 const CONFIG_FILE_PATH = 'config.json';
 const CONFIG_FILE_OPTIONS = {encoding: "utf-8"};
 const DEFAULT_PERCENT_VARIATION = 10;
-
-const notify = (message) => notifier.notify({
-    title: `Market Tracker`,
-    message
-});
 
 if(!fs.existsSync(CONFIG_FILE_PATH)){
     fs.copyFile(CONFIG_FILE_PATH + '.dist', CONFIG_FILE_PATH, error => {
