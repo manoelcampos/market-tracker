@@ -1,6 +1,7 @@
 const debug = require('debug')('tracker:tracking');
 const notify = require('./notify');
 const stockService = require('./yahooFinance');
+const cryptoService = require('./mercadoBitcoin');
 
 let intervalTimeout
 
@@ -15,8 +16,11 @@ const getQuotes = async (config, onlyExpectedVariation) => {
         return;
 
     debug(`Tracking ${config.stocks.length} stocks`);
+    debug(`Tracking ${config.cryptos.length} cryptocurrencies`);
+
     try{
         await stockService.getYahooFinanceQuotes(config, onlyExpectedVariation);
+        await cryptoService.getCryptoQuotes(config, onlyExpectedVariation);
     } catch(error){
         debug(error);
     }

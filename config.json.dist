@@ -11,5 +11,12 @@
             "expectedPercentVariation": 15.0,
             "baseQuote": 15.00
         }
+    ],
+
+    "cryptos": [
+        {
+            "ticker": "BTC",
+            "baseQuote": 103000
+        }
     ]
 }
