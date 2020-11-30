@@ -34,13 +34,13 @@ const getYahooFinanceQuote = async (stock) => {
 const getYahooFinanceQuotes = async ({ stocks, defaultExpectedPercentVariation }, onlyExpectedVariation = false) => {
     const results = await Promise.allSettled(stocks.map(stock => getYahooFinanceQuote(stock)));
     const successStocks = 
-            results.filter(res => res.status == 'fulfilled')
+            results.filter(res => res.status === 'fulfilled')
                    .map(res => res.value)
                    .filter(stock => onlyExpectedVariation ? hasMinQuoteVariation(stock, defaultExpectedPercentVariation) : true);
 
     const variationMsg = onlyExpectedVariation ? ' with desired variation' : '';
     debug(`Found ${successStocks.length} stock quotes${variationMsg}`);
-    if(successStocks.length == 0){
+    if(successStocks.length === 0){
         return;
     }
 
@@ -49,7 +49,7 @@ const getYahooFinanceQuotes = async ({ stocks, defaultExpectedPercentVariation }
                     .join('\n');
     
     const errors = stocks.length - successStocks.length;
-    const assets = errors == 1 ? 'asset' : 'assets';
+    const assets = errors === 1 ? 'asset' : 'assets';
     const error = errors > 0 ? `\nError when tracking ${errors} ${assets}` : ''
 
     notify(`${msg} \n*from base quote ${error}`);
