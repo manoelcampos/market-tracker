@@ -85,7 +85,7 @@ let intervalTimeout
  */
 const scheduleTracking = (error, newConfig) => {
     if(error){
-        const msg = `Error loading config config file. You need to check it: ${error}`;
+        const msg = `Error loading config file. You need to check it: ${error}`;
         debug(msg);
         notify(msg);
         return;
