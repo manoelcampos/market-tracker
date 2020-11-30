@@ -10,12 +10,12 @@ const { hasMinQuoteVariation, getVariationMsg } = require('./util');
 const getYahooFinanceQuote = async (stock) => {
     const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${stock.ticker}?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.comMGLU3.SA?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.com`;
     const res = await axios.get(url);
-    if(res.status != 200) {
+    if(res.status !== 200) {
         throw new Error(res.statusText);
     }
 
     const result = res.data?.quoteSummary?.result;
-    if(!result || result.lenght == 0 || !result[0].financialData?.currentPrice?.raw){
+    if(!result || result.lenght === 0 || !result[0].financialData?.currentPrice?.raw){
         const error = `Quote for ${stock.ticker} cannot be got`
         debug(error)
         throw new Error(error);
