@@ -13,11 +13,24 @@ You just need [Node.js](http://nodejs.org) installed.
 
 ## 2. Download
 
-You can download the project as a [zip file here](https://github.com/manoelcampos/market-tracker/archive/master.zip) or use git for that:
+### 2.1 Using git
+
+You can clone the project using the following command:
 
 ```bash
 git clone https://github.com/manoelcampos/market-tracker.git
 ```
+
+This way, you can update the sources just using:
+
+```bash
+git pull
+```
+
+### 2.2 Geting a zip file
+
+You can simply download it as a [zip file here](https://github.com/manoelcampos/market-tracker/archive/master.zip).
+
 
 ## 3. Install and run
 
