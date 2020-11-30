@@ -4,7 +4,7 @@ const notify = require('./notify');
 const { hasMinQuoteVariation, getVariationMsg } = require('./util');
 
 /**
- * 
+ * Gets the quote for a given stock
  * @param {object} stock A stock object, as defined into the config file, to get its quote.
  */
 const getYahooFinanceQuote = async (stock) => {

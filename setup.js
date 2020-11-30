@@ -21,8 +21,8 @@ const createConfigFile = (errorCallback) => {
 /**
  * Loads and watches changes to a the config file.
  * @param {function} a callback to be called when the file is loaded or changed.
- *                   That should accept (error, newConfig) parameters.
- *                   The newConfig represents the configuration object from the config file,
+ *                   That should accept (error, config) parameters.
+ *                   The config represents the configuration object from the config file,
  *                   if it could be found and parsed successfuly.
  * @param {boolean} watch Indicates if file changes should be watched and realoded
  */
