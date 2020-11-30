@@ -73,29 +73,6 @@ const trackStocks = async (config, onlyExpectedVariation) => {
     }
 }
 
-let intervalTimeout
-
-/**
- * Schedules the tracking of stocks.
- * 
- * @param {Error} error An error object if the config file could not be loaded or parsed
- * @param {object} config the config object read from json file
- */
-const scheduleTracking = (error, config) => {
-    if(error){
-        const msg = `Error loading config file. You need to check it: ${error}`;
-        debug(msg);
-        notify(msg);
-        return;
-    }
-
-    if(intervalTimeout)
-        clearInterval(intervalTimeout);
-    else trackStocks(config, false);
-    
-    intervalTimeout = setInterval(() => trackStocks(config, true), config.trackIntervalSecs*1000);    
-};
-
 module.exports = {
-    scheduleTracking
+    trackStocks
 }
