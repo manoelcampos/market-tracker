@@ -1,5 +1,7 @@
 # Market Tracker
 
+![](macos-preview.png)
+
 A Node.js console application to track market assets,
 currently including stocks and cryptocurrencies.
 It works for Windows, Linux and macOS.
