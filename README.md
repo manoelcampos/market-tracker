@@ -11,6 +11,14 @@ It uses Yahoo Finance data for stocks.
 
 You just need [Node.js](http://nodejs.org) installed.
 
+## Download
+
+You can download the project as a [zip file here](https://github.com/manoelcampos/market-tracker/archive/master.zip) or use git for it:
+
+```bash
+git clone https://github.com/manoelcampos/market-tracker.git
+```
+
 ## Install and run
 
 ```bash
