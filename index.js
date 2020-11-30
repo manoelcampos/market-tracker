@@ -8,6 +8,23 @@ const CONFIG_FILE_PATH = 'config.json';
 const CONFIG_FILE_OPTIONS = {encoding: "utf-8"};
 const DEFAULT_PERCENT_VARIATION = 10;
 
+const notify = (message) => notifier.notify({
+    title: `Market Tracker`,
+    message
+});
+
+if(!fs.existsSync(CONFIG_FILE_PATH)){
+    fs.copyFile(CONFIG_FILE_PATH + '.dist', CONFIG_FILE_PATH, error => {
+        if(!error){
+            return;
+        }
+
+        const message = `Error creating ${CONFIG_FILE_PATH} file`;
+        debug(message);
+        notify(message)
+    });
+}
+
 const getYahooFinanceQuote = async (stock) => {
     const yahooFinanceUrl = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${stock.ticker}?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.comMGLU3.SA?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.com`;
     const res = await axios.get(yahooFinanceUrl);
@@ -57,10 +74,7 @@ const getYahooFinanceQuotes = async (stocks) => {
     const assets = errors == 1 ? 'asset' : 'assets';
     const error = errors > 0 ? `\nError when tracking ${errors} ${stocks}` : ''
 
-    notifier.notify({
-        title: `Market Tracker`,
-        message: `${msg} ${error}`
-    });
+    notify(`${msg} ${error}`);
 }
 
 let config;
@@ -90,11 +104,7 @@ const scheduleTracking = (error, configData) => {
         config = JSON.parse(configData);
     } catch(error){
         config = null;
-        notifier.notify({
-            title: `Market Tracker`,
-            message: `Error trying to reload the ${CONFIG_FILE_PATH}: ${error}`
-        });
-
+        notify(`Error trying to reload the ${CONFIG_FILE_PATH}: ${error}`);
         return;
     }
 
@@ -105,6 +115,7 @@ const scheduleTracking = (error, configData) => {
     if(intervalTimeout){
         clearInterval(intervalTimeout);
     }
+    
     intervalTimeout = setInterval(track, config.trackIntervalSecs*1000);    
 };
 

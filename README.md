@@ -31,7 +31,7 @@ npm start &
 
 ## 4. Configuration
 
-The [config.json](config.json) file has the following structure that is explained
+The [config.json](config.json.dist) file has the following structure that is explained
 below.
 
 ```javascript
