@@ -1,7 +1,6 @@
 const debug = require('debug')('tracker:yahoo');
 const axios = require('axios');
-const notify = require('./notify');
-const { hasMinQuoteVariation, getVariationMsg } = require('./util');
+const { getAssetsQuotes } = require('./util');
 
 /**
  * Gets the quote for a given stock
@@ -26,53 +25,26 @@ const getYahooFinanceQuote = async (stock) => {
 
 //TODO dá pra enviar uma lista de ativos para o YahooFinance
 /**
- * 
- * @param {object} config The configuration object
- * @param {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
- *                                         on their quotes. 
+ * Gets the quotes for a list of assets such as stocks or cryptocurrencies
+ * @param paramObject An object containing the method parameters, that should contains the fields below:
+ * - {object} config The configuration object
+ * - {function} quoteFunction A function that receives an asset and returns its with a "quote" field
+ *                                 containing its current quote
+ * - {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
+ *                                    on their quotes.
  */
-const getYahooFinanceQuotes = async ({ stocks, defaultExpectedPercentVariation }, onlyExpectedVariation = false) => {
-    const results = await Promise.allSettled(stocks.map(stock => getYahooFinanceQuote(stock)));
-    const successStocks = 
-            results.filter(res => res.status === 'fulfilled')
-                   .map(res => res.value)
-                   .filter(stock => onlyExpectedVariation ? hasMinQuoteVariation(stock, defaultExpectedPercentVariation) : true);
+const getYahooFinanceQuotes = async ({ stocks, defaultExpectedPercentVariation }, onlyExpectedVariation) => {
+    const paramObj = {
+        assets: stocks,
+        assetType: 'stock',
+        defaultExpectedPercentVariation,
+        quoteFunction: getYahooFinanceQuote,
+        onlyExpectedVariation
+    };
 
-    const variationMsg = onlyExpectedVariation ? ' with desired variation' : '';
-    debug(`Found ${successStocks.length} stock quotes${variationMsg}`);
-    if(successStocks.length === 0){
-        return;
-    }
-
-    const msg = successStocks
-                    .map(stock => `${stock.ticker}: ${stock.quote}${getVariationMsg(stock, onlyExpectedVariation)}`)
-                    .join('\n');
-    
-    const errors = stocks.length - successStocks.length;
-    const assets = errors === 1 ? 'asset' : 'assets';
-    const error = errors > 0 ? `\nError when tracking ${errors} ${assets}` : ''
-
-    notify(`${msg} \n*from base quote ${error}`);
-}
-
-/**
- * Gets the quotes of stocks in the config file.
- * @param {object} config The configuration object from the json file
- * @param {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
- *                                         on their quotes. 
- */
-const trackStocks = async (config, onlyExpectedVariation) => {
-    if(!config)
-        return;
-
-    debug(`Tracking ${config.stocks.length} stocks`)
-    try{
-        await getYahooFinanceQuotes(config, onlyExpectedVariation);
-    } catch(error){
-        debug(error);
-    }
+    await getAssetsQuotes(paramObj);
 }
 
 module.exports = {
-    trackStocks
+    getYahooFinanceQuotes
 }

@@ -1,3 +1,5 @@
+const debug = require('debug')('tracker:util');
+const notify = require('./notify');
 
 /**
  * Tries to parse a json string content
@@ -32,8 +34,44 @@ const getVariationMsg = (stock, onlyQuotesWithDesiredVariation) => {
              '';
 }
 
+/**
+ * Gets the quotes for a list of assets such as stocks or cryptocurrencies
+ * @param paramObj An object containing the method parameters, that should contains the fields below:
+ * - {object} defaultExpectedPercentVariation Default percentage (between [0..100%]) of variation (up or down)
+ *                                            that one of your assets should have so you are notified.
+ * - {array} assets An array of stocks or cryptocurrencies, as defined in the config file
+ * - {string} assetType The type of the given assets (stocks, crypto, etc)
+ * - {function} quoteFunction A function that receives an asset and returns its with a "quote" field
+ *                                 containing its current quote
+ * - {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
+ *                                    on their quotes.
+ */
+const getAssetsQuotes = async (paramObj) => {
+    const { defaultExpectedPercentVariation, assets, assetType = "asset", quoteFunction, onlyExpectedVariation } = paramObj;
+
+    const results = await Promise.allSettled(assets.map(asset => quoteFunction(asset)));
+    const successAssets =
+        results.filter(res => res.status === 'fulfilled')
+            .map(res => res.value)
+            .filter(stock => onlyExpectedVariation ? hasMinQuoteVariation(stock, defaultExpectedPercentVariation) : true);
+
+    const variationMsg = onlyExpectedVariation ? ' with desired variation' : '';
+    debug(`Found ${successAssets.length} ${assetType} quotes${variationMsg}`);
+    if(successAssets.length === 0){
+        return;
+    }
+
+    const msg = successAssets
+        .map(asset => `${asset.ticker}: ${asset.quote}${getVariationMsg(asset, onlyExpectedVariation)}`)
+        .join('\n');
+
+    const errors = assets.length - successAssets.length;
+    const error = errors > 0 ? `\nError when tracking ${errors} ${assetType}` : ''
+
+    notify(`${msg} \n*from base quote ${error}`);
+}
+
 module.exports = {
     parseJson,
-    hasMinQuoteVariation,
-    getVariationMsg
+    getAssetsQuotes
 }
