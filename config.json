@@ -1,7 +1,7 @@
 {
     "trackIntervalSecs": 1800,
     "defaultPercentVariationNotification": 10,
-    "assets": [
+    "stocks": [
         {
             "ticker": "MGLU3.sa"
         },

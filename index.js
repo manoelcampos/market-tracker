@@ -7,8 +7,8 @@ const { exit } = require('process');
 const CONFIG_FILE_PATH = './config.json';
 const CONFIG_FILE_OPTIONS = {encoding: "utf-8"};
 
-const getYahooFinanceQuote = async (ticker) => {
-    const yahooFinanceUrl = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.comMGLU3.SA?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.com`;
+const getYahooFinanceQuote = async (stock) => {
+    const yahooFinanceUrl = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${stock.ticker}?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.comMGLU3.SA?formatted=true&crumb=swg7qs5y9UP&lang=en-US&region=US&modules=financialData,industryTrend,balanceSheetHistory,upgradeDowngradeHistory,recommendationTrend,earningsTrend,incomeStatementHistory,defaultKeyStatistics,calendarEvents,assetProfile,cashFlowStatementHistory,earningsHistory&corsDomain=finance.yahoo.com`;
     const res = await axios.get(yahooFinanceUrl);
     if(res.status != 200) {
         throw new Error(res.statusText);
@@ -16,26 +16,27 @@ const getYahooFinanceQuote = async (ticker) => {
 
     const result = res.data.quoteSummary.result;
     if(!result || result.lenght == 0){
-        const error = `Quote for ${ticker} cannot be got`
+        const error = `Quote for ${stock.ticker} cannot be got`
         debug(error)
         throw new Error(error);
     }
 
-    return {ticker, quote: result[0].financialData.currentPrice.raw};
+    return {...stock, quote: result[0].financialData.currentPrice.raw};
 }
 
 //TODO dá pra enviar uma lista de ativos para o YahooFinance
-const getYahooFinanceQuotes = async (tickerArray) => {
-    const results = await Promise.allSettled(tickerArray.map(ticker => getYahooFinanceQuote(ticker)));
-    const successResults = results.filter(res => res.status == 'fulfilled').map(res => res.value);
-    if(successResults.length == 0)
+const getYahooFinanceQuotes = async (stocks) => {
+    const results = await Promise.allSettled(stocks.map(stock => getYahooFinanceQuote(stock)));
+    const successStocks = results.filter(res => res.status == 'fulfilled').map(res => res.value);
+    if(successStocks.length == 0) {
         return;
+    }
 
-    const msg = successResults.map(res => `${res.ticker}: ${res.quote}`).join('\n');
+    const msg = successStocks.map(stock => `${stock.ticker}: ${stock.quote}`).join('\n');
     
-    const errors = tickerArray.length - successResults.length;
+    const errors = stocks.length - successStocks.length;
     const assets = errors == 1 ? 'asset' : 'assets';
-    const error = errors > 0 ? `\nError when tracking ${errors} ${assets}` : ''
+    const error = errors > 0 ? `\nError when tracking ${errors} ${stocks}` : ''
 
     notifier.notify({
         title: `Market Tracker`,
@@ -49,10 +50,9 @@ const track = async () => {
     if(!config)
         return;
 
-    debug(`Tracking ${config.assets.length} assets`)
+    debug(`Tracking ${config.stocks.length} stocks`)
     try{
-        const tickers = config.assets.map(asset => asset.ticker);
-        await getYahooFinanceQuotes(tickers);
+        await getYahooFinanceQuotes(config.stocks);
     } catch(error){
         debug(error);
     }
