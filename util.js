@@ -68,7 +68,8 @@ const getAssetsQuotes = async (paramObj) => {
     const errors = assets.length - successAssets.length;
     const error = errors > 0 ? `\nError when tracking ${errors} ${assetType}` : ''
 
-    notify(`${msg} \n*from base quote ${error}`);
+    const note = onlyExpectedVariation ? ` \n*from base quote ${error}` : '';
+    notify(`${msg}${note}`);
 }
 
 module.exports = {
