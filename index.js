@@ -42,15 +42,15 @@ const getYahooFinanceQuote = async (stock) => {
     return {...stock, quote: result[0].financialData.currentPrice.raw};
 }
 
-const getStockPercentVariation = (stock) => {
-    const percent = stock.percentVariationNotification || config.defaultPercentVariationNotification || DEFAULT_PERCENT_VARIATION;
+const getExpectedPercentVariation = (stock) => {
+    const percent = stock.expectedPercentVariation || config.defaultExpectedPercentVariation || DEFAULT_PERCENT_VARIATION;
     return percent/100.0;
 }; 
 
 
-const getStockVariationPercent = stock => stock.quote/(stock.baseQuote || stock.quote) - 1;
+const getActualStockPercentVariation = stock => stock.quote/(stock.baseQuote || stock.quote) - 1;
 
-const hasMinStockVariation = stock => Math.abs(getStockVariationPercent(stock)) >= getStockPercentVariation(stock);
+const hasMinStockVariation = stock => Math.abs(getActualStockPercentVariation(stock)) >= getExpectedPercentVariation(stock);
 
 //TODO dá pra enviar uma lista de ativos para o YahooFinance
 const getYahooFinanceQuotes = async (stocks) => {
@@ -67,14 +67,14 @@ const getYahooFinanceQuotes = async (stocks) => {
     }
 
     const msg = stocksWithDesiredVariation
-                    .map(stock => `${stock.ticker}: ${stock.quote} (variation ${Math.round(getStockVariationPercent(stock)*100)}%)`)
+                    .map(stock => `${stock.ticker}: ${stock.quote} (variation*: ${Math.round(getActualStockPercentVariation(stock)*100)}%)`)
                     .join('\n');
     
     const errors = stocks.length - successStocks.length;
     const assets = errors == 1 ? 'asset' : 'assets';
     const error = errors > 0 ? `\nError when tracking ${errors} ${stocks}` : ''
 
-    notify(`${msg} ${error}`);
+    notify(`${msg} \n*from base quote ${error}`);
 }
 
 let config;
