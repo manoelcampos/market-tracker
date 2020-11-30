@@ -52,22 +52,28 @@ const getActualStockPercentVariation = stock => stock.quote/(stock.baseQuote || 
 
 const hasMinStockVariation = stock => Math.abs(getActualStockPercentVariation(stock)) >= getExpectedPercentVariation(stock);
 
+const getVariationMsg = (stock, onlyQuotesWithDesiredVariation) => {
+    return onlyQuotesWithDesiredVariation ?
+             ` (variation*: ${Math.round(getActualStockPercentVariation(stock)*100)}%)` :
+             '';
+}
+
 //TODO dá pra enviar uma lista de ativos para o YahooFinance
-const getYahooFinanceQuotes = async (stocks) => {
+const getYahooFinanceQuotes = async (stocks, onlyQuotesWithDesiredVariation = false) => {
     const results = await Promise.allSettled(stocks.map(stock => getYahooFinanceQuote(stock)));
-    const successStocks = results.filter(res => res.status == 'fulfilled').map(res => res.value);
-    if(successStocks.length == 0) {
+    const successStocks = 
+            results.filter(res => res.status == 'fulfilled')
+                   .map(res => res.value)
+                   .filter(stock => onlyQuotesWithDesiredVariation ? hasMinStockVariation(stock) : true);
+
+    const variationMsg = onlyQuotesWithDesiredVariation ? ' with desired variation' : '';
+    debug(`Found ${successStocks.length} stock quotes${variationMsg}`);
+    if(successStocks.length == 0){
         return;
     }
 
-    const stocksWithDesiredVariation = successStocks.filter(hasMinStockVariation);
-    debug(`Found ${stocksWithDesiredVariation.length} stocks with desired variation`);
-    if(stocksWithDesiredVariation.length == 0){
-        return;
-    }
-
-    const msg = stocksWithDesiredVariation
-                    .map(stock => `${stock.ticker}: ${stock.quote} (variation*: ${Math.round(getActualStockPercentVariation(stock)*100)}%)`)
+    const msg = successStocks
+                    .map(stock => `${stock.ticker}: ${stock.quote}${getVariationMsg(stock, onlyQuotesWithDesiredVariation)}`)
                     .join('\n');
     
     const errors = stocks.length - successStocks.length;
@@ -79,13 +85,13 @@ const getYahooFinanceQuotes = async (stocks) => {
 
 let config;
 
-const track = async () => {
+const track = async (onlyQuotesWithDesiredVariation) => {
     if(!config)
         return;
 
     debug(`Tracking ${config.stocks.length} stocks`)
     try{
-        await getYahooFinanceQuotes(config.stocks);
+        await getYahooFinanceQuotes(config.stocks, onlyQuotesWithDesiredVariation);
     } catch(error){
         debug(error);
     }
@@ -109,14 +115,14 @@ const scheduleTracking = (error, configData) => {
     }
 
     if(!hadPreviousConfig){
-        track();
+        track(false);
     }
     
     if(intervalTimeout){
         clearInterval(intervalTimeout);
     }
     
-    intervalTimeout = setInterval(track, config.trackIntervalSecs*1000);    
+    intervalTimeout = setInterval(() => track(true), config.trackIntervalSecs*1000);    
 };
 
 const loadConfigFile = () => fs.readFile(CONFIG_FILE_PATH, CONFIG_FILE_OPTIONS, scheduleTracking);
