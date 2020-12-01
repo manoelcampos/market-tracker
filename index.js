@@ -19,17 +19,18 @@ const requestListener = async (config, req, res) => {
     res.end();
 }
 
+let httpServer
 const startHttpServer = config => {
     const PORT = getPort(config);
-    const server = http.createServer((req, res) => requestListener(config, req, res));
-    server.listen(PORT, () => {
+    httpServer = http.createServer((req, res) => requestListener(config, req, res));
+    httpServer.listen(PORT, () => {
         const msg = PORT === 80 ? '' : `:${PORT}`;
         console.log(`Access the service at http://localhost${msg}\n`);
     });
 }
 
 setup.loadConfigFile((error, config) => {
-    if(config && !error && !http.listening){
+    if(config && !error && !httpServer?.listening){
         startHttpServer(config);
     }
 
