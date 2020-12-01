@@ -22,6 +22,9 @@ const getQuotes = async (config, onlyExpectedVariation) => {
     try{
         const stocks = await stockService.getYahooFinanceQuotes(config, onlyExpectedVariation);
         const cryptos = await cryptoService.getCryptoQuotes(config, onlyExpectedVariation);
+        if(config.notifyWhenNoExpectedVariation && !stocks.length && !cryptos.length) {
+            notify('No expected variation in your assets');
+        }
         writReport(stocks, cryptos);
 
     } catch(error){

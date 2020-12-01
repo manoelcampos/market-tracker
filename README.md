@@ -56,6 +56,10 @@ below.
 {
     //Timer interval (in seconds) to check for assets quotes variation.
     "trackIntervalSecs": 1800,
+    
+    /*Whether show a notification when no expected variation 
+    occurs in any of your assets*/ 
+    "notifyWhenNoExpectedVariation": false,
 
     /*Default percentage (between [0..100%]) of variation (up or down) 
     that one of your assets should have so you are notified. 

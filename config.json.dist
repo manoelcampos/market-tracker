@@ -1,5 +1,6 @@
 {
     "trackIntervalSecs": 1800,
+    "notifyWhenNoExpectedVariation": false,
     "defaultExpectedPercentVariation": 10.0,
     "stocks": [
         {
