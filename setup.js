@@ -29,7 +29,7 @@ const createConfigFile = (errorCallback) => {
  *                   if it could be found and parsed successfuly.
  * @param {boolean} watch Indicates if file changes should be watched and realoded
  */
-const loadConfigFile = (callback, watch = true) => {
+const loadConfigFile = (callback, watch) => {
     fs.readFile(CONFIG_FILE_PATH, CONFIG_FILE_OPTIONS, (error, jsonStr) => error ? callback(error) : parseJson(jsonStr, callback));
     if(watch){
         fs.watch(CONFIG_FILE_PATH, CONFIG_FILE_OPTIONS, (eventType, filename) => {
