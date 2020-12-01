@@ -1,5 +1,6 @@
 const debug = require('debug')('tracker:tracking');
 const notify = require('./notify');
+const fs = require('fs');
 const stockService = require('./yahooFinance');
 const cryptoService = require('./mercadoBitcoin');
 
@@ -19,11 +20,50 @@ const getQuotes = async (config, onlyExpectedVariation) => {
     debug(`Tracking ${config.cryptos.length} cryptocurrencies`);
 
     try{
-        await stockService.getYahooFinanceQuotes(config, onlyExpectedVariation);
-        await cryptoService.getCryptoQuotes(config, onlyExpectedVariation);
+        const stocks = await stockService.getYahooFinanceQuotes(config, onlyExpectedVariation);
+        const cryptos = await cryptoService.getCryptoQuotes(config, onlyExpectedVariation);
+        writReport(stocks, cryptos);
+
     } catch(error){
         debug(error);
     }
+}
+
+const writReport = (stocks, cryptos) => {
+    let html =
+    `<html>
+        <head>
+            <title>Market Tracker Quotes</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" lang="en-US">
+            
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        </head>
+        <body>
+            <h1>Market Tracker Quotes (Last Update: ${new Date().toDateString()} ${new Date().toLocaleTimeString()})</h1>
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                      <th scope="col">Asset</th>
+                      <th scope="col">Quote</th>
+                      <th scope="col">Variation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${assetsTableRow(stocks)}
+                    ${assetsTableRow(cryptos)}
+                </tbody>
+            </table>
+     </body>
+     </html>`;
+
+    fs.writeFile('report.html', html, {encoding: 'utf-8'}, err => debug(`Error writing the report: ${err}`));
+}
+
+const assetsTableRow = assets => {
+    return assets
+             .map(asset => `<tr><td>${asset.ticker}</td><td>${asset.quote}</td><td>${asset.variation}%</td></tr>`)
+             .join('\n\t\t\t');
 }
 
 /**

@@ -29,7 +29,7 @@ const hasMinQuoteVariation = (stock, defaultExpectedPercentVariation) => {
 }
 
 const getAssetWithVariation = asset => {
-    asset.variation = Math.round(getActualStockPercentVariation(asset)*100);
+    asset.variation = Math.round(getActualStockPercentVariation(asset)*100.0);
     return asset;
 }
 
