@@ -71,7 +71,7 @@ const generateReport = (config, stocks, cryptos) => {
 
 const assetTableRow = ( { defaultExpectedPercentVariation }, asset ) =>
     `<tr><td>${asset.ticker}</td><td>${asset.quote}</td><td>${asset.baseQuote || ''}</td>
-     <td>${getExpectedPercentVariation(asset, defaultExpectedPercentVariation)}</td><td>${asset.variation}%</td></tr>`;
+     <td>${getExpectedPercentVariation(asset, defaultExpectedPercentVariation)}%</td><td>${asset.variation}%</td></tr>`;
 
 const assetsTableRows = ( config, assets ) => assets.map(asset => assetTableRow(config, asset)).join('\n\t\t\t');
 
