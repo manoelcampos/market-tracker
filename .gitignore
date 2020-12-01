@@ -2,3 +2,4 @@
 config.json
 .idea/
 report.html
+.DS_Store
