@@ -42,7 +42,7 @@ const getCryptoQuotes = async ({ cryptos, defaultExpectedPercentVariation }, onl
         onlyExpectedVariation
     };
 
-    await getAssetsQuotes(paramObj);
+    return await getAssetsQuotes(paramObj);
 }
 
 module.exports = {

@@ -28,10 +28,14 @@ const hasMinQuoteVariation = (stock, defaultExpectedPercentVariation) => {
     return Math.abs(getActualStockPercentVariation(stock)) >= getExpectedPercentVariation(stock, defaultExpectedPercentVariation);
 }
 
-const getVariationMsg = (asset, onlyQuotesWithDesiredVariation) => {
-    return onlyQuotesWithDesiredVariation ?
-             ` (variation*: ${Math.round(getActualStockPercentVariation(asset)*100)}%)` :
-             '';
+const getAssetWithVariation = asset => {
+    asset.variation = Math.round(getActualStockPercentVariation(asset)*100);
+    return asset;
+}
+
+const assetToStr = (asset, onlyExpectedVariation) => {
+    const variation = onlyExpectedVariation ? ` (variation*: ${asset.variation}%` : '';
+    return `${asset.ticker}: ${asset.quote}${variation}`;
 }
 
 /**
@@ -53,7 +57,8 @@ const getAssetsQuotes = async (paramObj) => {
     const successAssets =
         results.filter(res => res.status === 'fulfilled')
             .map(res => res.value)
-            .filter(asset => onlyExpectedVariation ? hasMinQuoteVariation(asset, defaultExpectedPercentVariation) : true);
+            .filter(asset => onlyExpectedVariation ? hasMinQuoteVariation(asset, defaultExpectedPercentVariation) : true)
+            .map(getAssetWithVariation);
 
     const variationMsg = onlyExpectedVariation ? ' with desired variation' : '';
     debug(`Found ${successAssets.length} ${assetType} quotes${variationMsg}`);
@@ -62,14 +67,15 @@ const getAssetsQuotes = async (paramObj) => {
     }
 
     const msg = successAssets
-        .map(asset => `${asset.ticker}: ${asset.quote}${getVariationMsg(asset, onlyExpectedVariation)}`)
-        .join('\n');
+                    .map(asset => assetToStr(asset, onlyExpectedVariation))
+                    .join('\n');
 
     const errors = assets.length - successAssets.length;
     const error = errors > 0 ? `\nError when tracking ${errors} ${assetType}` : ''
 
     const note = onlyExpectedVariation ? ` \n*from base quote ${error}` : '';
     notify(`${msg}${note}`);
+    return successAssets;
 }
 
 module.exports = {

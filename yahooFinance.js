@@ -42,7 +42,7 @@ const getYahooFinanceQuotes = async ({ stocks, defaultExpectedPercentVariation }
         onlyExpectedVariation
     };
 
-    await getAssetsQuotes(paramObj);
+    return await getAssetsQuotes(paramObj);
 }
 
 module.exports = {
