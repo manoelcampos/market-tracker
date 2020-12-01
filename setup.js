@@ -1,5 +1,8 @@
 const fs = require('fs');
+const debug = require('debug')('tracker:setup');
+const notify = require('./notify');
 const { parseJson } = require('./util');
+
 const CONFIG_FILE_PATH = 'config.json';
 const CONFIG_FILE_OPTIONS = {encoding: "utf-8"};
 const DEFAULT_PERCENT_VARIATION = 10;
@@ -29,7 +32,12 @@ const createConfigFile = (errorCallback) => {
 const loadConfigFile = (callback, watch = true) => {
     fs.readFile(CONFIG_FILE_PATH, CONFIG_FILE_OPTIONS, (error, jsonStr) => error ? callback(error) : parseJson(jsonStr, callback));
     if(watch){
-        fs.watch(CONFIG_FILE_PATH, CONFIG_FILE_OPTIONS, (eventType, filename) => loadConfigFile(callback, false));
+        fs.watch(CONFIG_FILE_PATH, CONFIG_FILE_OPTIONS, (eventType, filename) => {
+            const msg = 'Reloading changes in config file';
+            debug(msg);
+            notify(msg);
+            loadConfigFile(callback, false);
+        });
     }
 };
 
