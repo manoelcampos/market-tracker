@@ -61,7 +61,7 @@ below.
     that one of your assets should have so you are notified. 
     If an asset doesn't have it own configuration for this parameter,
     this value is used instead.*/
-    "defaultPercentVariationNotification": 10.0,
+    "defaultExpectedPercentVariation": 10.0,
 
     /* List of stocks you want to track. 
     Add a new entry for each stock. */
@@ -82,8 +82,8 @@ below.
             /*Percentage (between [0..100%]) of variation (up or down) 
             that this particular stock should have so you are notified. 
             If the stock doesn't have this configuration,
-            the defaultPercentVariationNotification is used instead.*/
-            "percentVariationNotification": 15.0,
+            the defaultExpectedPercentVariation is used instead.*/
+            "expectedPercentVariation": 15.0,
 
             "baseQuote": 15.00
         }
