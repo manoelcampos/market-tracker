@@ -1,5 +1,6 @@
 const debug = require('debug')('tracker:util');
 const notify = require('./notify');
+const open = require('open');
 
 /**
  * Tries to parse a json string content
@@ -41,8 +42,7 @@ const assetToStr = (asset, onlyExpectedVariation) => {
 /**
  * Gets the quotes for a list of assets such as stocks or cryptocurrencies
  * @param paramObj An object containing the method parameters, that should contains the fields below:
- * - {object} defaultExpectedPercentVariation Default percentage (between [0..100%]) of variation (up or down)
- *                                            that one of your assets should have so you are notified.
+ * - {object} config The config object
  * - {array} assets An array of stocks or cryptocurrencies, as defined in the config file
  * - {string} assetType The type of the given assets (stocks, crypto, etc)
  * - {function} quoteFunction A function that receives an asset and returns its with a "quote" field
@@ -50,19 +50,19 @@ const assetToStr = (asset, onlyExpectedVariation) => {
  * - {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
  *                                    on their quotes.
  */
-const getAssetsQuotes = async (paramObj) => {
-    const { defaultExpectedPercentVariation, assets, assetType = "asset", quoteFunction, onlyExpectedVariation } = paramObj;
+const getAssetsQuotes = async (paramObj, showNotification) => {
+    const { config, assets, assetType = "asset", quoteFunction, onlyExpectedVariation } = paramObj;
 
     const results = await Promise.allSettled(assets.map(asset => quoteFunction(asset)));
     const successAssets =
         results.filter(res => res.status === 'fulfilled')
             .map(res => res.value)
-            .filter(asset => onlyExpectedVariation ? hasMinQuoteVariation(asset, defaultExpectedPercentVariation) : true)
+            .filter(asset => onlyExpectedVariation ? hasMinQuoteVariation(asset, config.defaultExpectedPercentVariation) : true)
             .map(getAssetWithVariation);
 
     const variationMsg = onlyExpectedVariation ? ' with desired variation' : '';
     debug(`Found ${successAssets.length} ${assetType} quotes${variationMsg}`);
-    if(!successAssets.length){
+    if(!successAssets.length || !showNotification){
         return successAssets;
     }
 
@@ -74,7 +74,12 @@ const getAssetsQuotes = async (paramObj) => {
     const error = errors > 0 ? `\nError when tracking ${errors} ${assetType}` : ''
 
     const note = onlyExpectedVariation ? ` \n*from base quote ${error}` : '';
-    notify(`${msg}${note}`);
+    notify(`${msg}${note}`, () => {
+        const url = `http://localhost:${config.port}`;
+        console.log(url);
+        open(url, { url: true });
+    });
+
     return successAssets;
 }
 

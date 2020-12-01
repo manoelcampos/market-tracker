@@ -33,16 +33,16 @@ const getCryptoQuote = async (crypto) => {
  * @param {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
  *                                         on their quotes.
  */
-const getCryptoQuotes = async ({ cryptos, defaultExpectedPercentVariation }, onlyExpectedVariation) => {
+const getCryptoQuotes = async (config, onlyExpectedVariation, showNotification) => {
     const paramObj = {
-        assets: cryptos,
+        config,
+        assets: config.cryptos,
         assetType: 'cryptocurrency',
-        defaultExpectedPercentVariation,
         quoteFunction: getCryptoQuote,
         onlyExpectedVariation
     };
 
-    return await getAssetsQuotes(paramObj);
+    return await getAssetsQuotes(paramObj, showNotification);
 }
 
 module.exports = {

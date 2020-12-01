@@ -33,16 +33,16 @@ const getYahooFinanceQuote = async (stock) => {
  * - {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
  *                                    on their quotes.
  */
-const getYahooFinanceQuotes = async ({ stocks, defaultExpectedPercentVariation }, onlyExpectedVariation) => {
+const getYahooFinanceQuotes = async ( config, onlyExpectedVariation, showNotification) => {
     const paramObj = {
-        assets: stocks,
+        config,
+        assets: config.stocks,
         assetType: 'stock',
-        defaultExpectedPercentVariation,
         quoteFunction: getYahooFinanceQuote,
         onlyExpectedVariation
     };
 
-    return await getAssetsQuotes(paramObj);
+    return await getAssetsQuotes(paramObj, showNotification);
 }
 
 module.exports = {

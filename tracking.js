@@ -9,30 +9,33 @@ let intervalTimeout
 /**
  * Gets the quotes of assets (such as stocks and cryptocurrencies) in the config file.
  * @param {object} config The configuration object from the json file
+ * @param {boolean} showNotification  Shows notification with quotes
  * @param {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
  *                                         on their quotes.
  */
-const getQuotes = async (config, onlyExpectedVariation) => {
-    if(!config)
+const getQuotes = async (config, showNotification, onlyExpectedVariation) => {
+    if(!config) {
+        debug('Config file is not loaded yet');
         return;
+    }
 
     debug(`Tracking ${config.stocks.length} stocks`);
     debug(`Tracking ${config.cryptos.length} cryptocurrencies`);
 
     try{
-        const stocks = await stockService.getYahooFinanceQuotes(config, onlyExpectedVariation);
-        const cryptos = await cryptoService.getCryptoQuotes(config, onlyExpectedVariation);
+        const stocks = await stockService.getYahooFinanceQuotes(config, onlyExpectedVariation, showNotification);
+        const cryptos = await cryptoService.getCryptoQuotes(config, onlyExpectedVariation, showNotification);
         if(config.notifyWhenNoExpectedVariation && !stocks.length && !cryptos.length) {
             notify('No expected variation in your assets');
         }
-        writReport(stocks, cryptos);
 
+        return generateReport(stocks, cryptos);
     } catch(error){
         debug(error);
     }
 }
 
-const writReport = (stocks, cryptos) => {
+const generateReport = (stocks, cryptos) => {
     let html =
     `<html>
         <head>
@@ -60,10 +63,7 @@ const writReport = (stocks, cryptos) => {
      </body>
      </html>`;
 
-    fs.writeFile('report.html', html, {encoding: 'utf-8'}, err => {
-        if(err)
-            debug(`Error writing the report: ${err}`);
-    });
+    return html;
 }
 
 const assetsTableRow = assets => {
@@ -90,12 +90,13 @@ const schedule = (error, config) => {
         clearInterval(intervalTimeout);
     else {
         //Shows quotes at startup
-        getQuotes(config);
+        getQuotes(config, true);
     }
 
-    intervalTimeout = setInterval(() => getQuotes(config, true), config.trackIntervalSecs*1000);
+    intervalTimeout = setInterval(() => getQuotes(config, true, true), config.trackIntervalSecs*1000);
 };
 
 module.exports = {
-    schedule
+    schedule, 
+    getQuotes
 }

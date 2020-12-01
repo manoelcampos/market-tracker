@@ -60,6 +60,9 @@ below.
 
 ```javascript
 {
+    //Service port, to enable acccess to http://localhost:8080
+    "port": 8080,
+
     //Timer interval (in seconds) to check for assets quotes variation.
     "trackIntervalSecs": 1800,
     

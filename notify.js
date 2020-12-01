@@ -1,14 +1,11 @@
-const notifier = require('node-notifier');
-const debug = require('debug')('tracker:notify');
-const open = require('open');
-
-module.exports = (message) => {
+module.exports = (message, onClick) => {
+    const notifier = require('node-notifier');
     notifier.notify({
         title: `Market Tracker`,
-        message
+        message,
+        wait: true
     });
 
-    const report = __dirname + '/report.html';
-    debug(`Writing report file: ${report}`);
-    notifier.on('click', (notifierObj, options, event) => open(report));
+    if(onClick)
+        notifier.on('click', onClick);
 }

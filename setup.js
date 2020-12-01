@@ -36,7 +36,7 @@ const loadConfigFile = (callback, watch) => {
             const msg = 'Reloading changes in config file';
             debug(msg);
             notify(msg);
-            loadConfigFile(callback, false);
+            loadConfigFile(callback);
         });
     }
 };
