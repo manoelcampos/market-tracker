@@ -50,7 +50,7 @@ const generateReport = (config, stocks, cryptos) => {
             <h1>Market Tracker Quotes (Last Update: ${new Date().toDateString()} ${new Date().toLocaleTimeString()})</h1>
             <table class="table table-striped">
                 <thead class="thead-dark">
-                    <tr>
+                    <tr style="text-align: left;">
                       <th scope="col">Asset</th>
                       <th scope="col">Quote</th>
                       <th scope="col">Base Quote for Comparison</th>
@@ -71,7 +71,7 @@ const generateReport = (config, stocks, cryptos) => {
 
 const assetTableRow = ( { defaultExpectedPercentVariation }, asset ) =>
     `<tr><td>${asset.ticker}</td><td>${asset.quote}</td><td>${asset.baseQuote || ''}</td>
-     <td>${getExpectedPercentVariation(asset, defaultExpectedPercentVariation)}%</td><td>${asset.variation}%</td></tr>`;
+     <td>±${getExpectedPercentVariation(asset, defaultExpectedPercentVariation)}%</td><td>${asset.variation}%</td></tr>`;
 
 const assetsTableRows = ( config, assets ) => assets.map(asset => assetTableRow(config, asset)).join('\n\t\t\t');
 
