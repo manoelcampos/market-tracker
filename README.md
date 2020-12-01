@@ -74,7 +74,7 @@ below.
             /* The base value you want to compare the current stock quote with.
             This way, if there is the desired variation on the stock quote,
             you will be notified.*/
-            "baseValue": 20.00
+            "baseQuote": 20.00
         },
         {
             "ticker": "VVAR3.sa",
@@ -85,7 +85,7 @@ below.
             the defaultPercentVariationNotification is used instead.*/
             "percentVariationNotification": 15.0,
 
-            "baseValue": 15.00
+            "baseQuote": 15.00
         }
     ],
 
