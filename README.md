@@ -14,7 +14,7 @@ The API from the brazilian exchange [Mercado Bitcoin](https://www.mercadobitcoin
 
 ## 1. Requirements
 
-You just need [Node.js](http://nodejs.org) installed.
+You just need [Node.js 15](http://nodejs.org) installed.
 
 ## 2. Download
 
