@@ -57,7 +57,10 @@ const writReport = (stocks, cryptos) => {
      </body>
      </html>`;
 
-    fs.writeFile('report.html', html, {encoding: 'utf-8'}, err => debug(`Error writing the report: ${err}`));
+    fs.writeFile('report.html', html, {encoding: 'utf-8'}, err => {
+        if(err)
+            debug(`Error writing the report: ${err}`);
+    });
 }
 
 const assetsTableRow = assets => {
