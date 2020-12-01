@@ -12,7 +12,8 @@ const getCryptoQuote = async (crypto) => {
         throw new Error(res.statusText);
     }
 
-    const quote = res.data?.ticker?.last;
+    //Multiplying by 1.0 cuts excessive decimal places
+    const quote = res.data?.ticker?.last * 1.0;
     if(!quote){
         const error = `Quote for ${crypto.ticker} cannot be got`
         debug(error)
