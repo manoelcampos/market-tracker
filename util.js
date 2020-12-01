@@ -18,8 +18,8 @@ const parseJson = (jsonStr, callback) => {
     }
 }
 
-const getExpectedPercentVariation = (stock, defaultExpectedPercentVariation) => {
-    const percent = stock.expectedPercentVariation || defaultExpectedPercentVariation || DEFAULT_PERCENT_VARIATION;
+const getExpectedPercentVariation = (asset, defaultExpectedPercentVariation) => {
+    const percent = asset.expectedPercentVariation || defaultExpectedPercentVariation || DEFAULT_PERCENT_VARIATION;
     return percent/100.0;
 }; 
 
