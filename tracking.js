@@ -3,6 +3,7 @@ const notify = require('./notify');
 const fs = require('fs');
 const stockService = require('./yahooFinance');
 const cryptoService = require('./mercadoBitcoin');
+const { getExpectedPercentVariation } = require('./util');
 
 let intervalTimeout
 
@@ -29,13 +30,13 @@ const getQuotes = async (config, showNotification, onlyExpectedVariation) => {
             notify('No expected variation in your assets');
         }
 
-        return generateReport(stocks, cryptos);
+        return generateReport(config, stocks, cryptos);
     } catch(error){
         debug(error);
     }
 }
 
-const generateReport = (stocks, cryptos) => {
+const generateReport = (config, stocks, cryptos) => {
     let html =
     `<html>
         <head>
@@ -52,12 +53,14 @@ const generateReport = (stocks, cryptos) => {
                     <tr>
                       <th scope="col">Asset</th>
                       <th scope="col">Quote</th>
-                      <th scope="col">Variation</th>
+                      <th scope="col">Base Quote for Comparison</th>
+                      <th scope="col">Expected Variation</th>
+                      <th scope="col">Actual Variation</th>
                     </tr>
                 </thead>
                 <tbody>
-                    ${assetsTableRow(stocks)}
-                    ${assetsTableRow(cryptos)}
+                    ${assetsTableRows(config, stocks)}
+                    ${assetsTableRows(config, cryptos)}
                 </tbody>
             </table>
      </body>
@@ -66,11 +69,11 @@ const generateReport = (stocks, cryptos) => {
     return html;
 }
 
-const assetsTableRow = assets => {
-    return assets
-             .map(asset => `<tr><td>${asset.ticker}</td><td>${asset.quote}</td><td>${asset.variation}%</td></tr>`)
-             .join('\n\t\t\t');
-}
+const assetTableRow = ( { defaultExpectedPercentVariation }, asset ) =>
+    `<tr><td>${asset.ticker}</td><td>${asset.quote}</td><td>${asset.baseQuote || ''}</td>
+     <td>${getExpectedPercentVariation(asset, defaultExpectedPercentVariation)}</td><td>${asset.variation}%</td></tr>`;
+
+const assetsTableRows = ( config, assets ) => assets.map(asset => assetTableRow(config, asset)).join('\n\t\t\t');
 
 /**
  * Schedules the tracking of assets after the config file is (re)loaded.

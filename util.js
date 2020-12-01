@@ -19,14 +19,13 @@ const parseJson = (jsonStr, callback) => {
 }
 
 const getExpectedPercentVariation = (asset, defaultExpectedPercentVariation) => {
-    const percent = asset.expectedPercentVariation || defaultExpectedPercentVariation || DEFAULT_PERCENT_VARIATION;
-    return percent/100.0;
+    return asset.expectedPercentVariation || defaultExpectedPercentVariation || DEFAULT_PERCENT_VARIATION;
 }; 
 
 const getActualStockPercentVariation = stock => stock.quote/(stock.baseQuote || stock.quote) - 1;
 
 const hasMinQuoteVariation = (stock, defaultExpectedPercentVariation) => {
-    return Math.abs(getActualStockPercentVariation(stock)) >= getExpectedPercentVariation(stock, defaultExpectedPercentVariation);
+    return Math.abs(getActualStockPercentVariation(stock)) >= getExpectedPercentVariation(stock, defaultExpectedPercentVariation)/100.0;
 }
 
 const getAssetWithVariation = asset => {
@@ -90,5 +89,6 @@ const getPort = config => config.port || (isWindows() ? 80 : 8080);
 module.exports = {
     parseJson,
     getAssetsQuotes,
+    getExpectedPercentVariation,
     getPort
 }
