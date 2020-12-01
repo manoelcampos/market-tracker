@@ -28,9 +28,9 @@ const hasMinQuoteVariation = (stock, defaultExpectedPercentVariation) => {
     return Math.abs(getActualStockPercentVariation(stock)) >= getExpectedPercentVariation(stock, defaultExpectedPercentVariation);
 }
 
-const getVariationMsg = (stock, onlyQuotesWithDesiredVariation) => {
+const getVariationMsg = (asset, onlyQuotesWithDesiredVariation) => {
     return onlyQuotesWithDesiredVariation ?
-             ` (variation*: ${Math.round(getActualStockPercentVariation(stock)*100)}%)` :
+             ` (variation*: ${Math.round(getActualStockPercentVariation(asset)*100)}%)` :
              '';
 }
 
@@ -53,7 +53,7 @@ const getAssetsQuotes = async (paramObj) => {
     const successAssets =
         results.filter(res => res.status === 'fulfilled')
             .map(res => res.value)
-            .filter(stock => onlyExpectedVariation ? hasMinQuoteVariation(stock, defaultExpectedPercentVariation) : true);
+            .filter(asset => onlyExpectedVariation ? hasMinQuoteVariation(asset, defaultExpectedPercentVariation) : true);
 
     const variationMsg = onlyExpectedVariation ? ' with desired variation' : '';
     debug(`Found ${successAssets.length} ${assetType} quotes${variationMsg}`);
