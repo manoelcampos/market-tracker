@@ -12,6 +12,12 @@ It uses Yahoo Finance data for stocks.
 **This way, the app cannot be used for commercial porpuses.**
 The API from the brazilian exchange [Mercado Bitcoin](https://www.mercadobitcoin.com.br/api-doc/) is used for cryptocurrencies.
 
+A `report.html` file is generated into the project directory and can be accessed by clicking
+the notification.
+
+![](report.png)
+
+
 ## 1. Requirements
 
 You just need [Node.js 15](http://nodejs.org) installed.
