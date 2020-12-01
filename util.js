@@ -62,8 +62,8 @@ const getAssetsQuotes = async (paramObj) => {
 
     const variationMsg = onlyExpectedVariation ? ' with desired variation' : '';
     debug(`Found ${successAssets.length} ${assetType} quotes${variationMsg}`);
-    if(successAssets.length === 0){
-        return;
+    if(!successAssets.length){
+        return successAssets;
     }
 
     const msg = successAssets
