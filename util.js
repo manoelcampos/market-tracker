@@ -22,14 +22,14 @@ const getExpectedPercentVariation = (asset, defaultExpectedPercentVariation) => 
     return asset.expectedPercentVariation || defaultExpectedPercentVariation || DEFAULT_PERCENT_VARIATION;
 }; 
 
-const getActualStockPercentVariation = stock => stock.quote/(stock.baseQuote || stock.quote) - 1;
+const getActualAssetPercentVariation = asset => asset.quote/(asset.baseQuote || asset.quote) - 1;
 
-const hasMinQuoteVariation = (stock, defaultExpectedPercentVariation) => {
-    return Math.abs(getActualStockPercentVariation(stock)) >= getExpectedPercentVariation(stock, defaultExpectedPercentVariation)/100.0;
+const hasMinQuoteVariation = (asset, defaultExpectedPercentVariation) => {
+    return Math.abs(getActualAssetPercentVariation(asset)) >= getExpectedPercentVariation(asset, defaultExpectedPercentVariation)/100.0;
 }
 
 const getAssetWithVariation = asset => {
-    asset.variation = Math.round(getActualStockPercentVariation(asset)*100.0);
+    asset.variation = Math.round(getActualAssetPercentVariation(asset)*100.0);
     return asset;
 }
 
