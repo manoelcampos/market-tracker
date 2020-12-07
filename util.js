@@ -72,8 +72,7 @@ const getAssetsQuotes = async (paramObj, showNotification) => {
     const errors = assets.length - successAssets.length;
     const error = errors > 0 ? `\nError when tracking ${errors} ${assetType}` : ''
 
-    const note = onlyExpectedVariation ? ` \n*from base quote ${error}` : '';
-    notify(`${msg}${note}`, () => {
+    notify(`${msg}${error}`, () => {
         const url = `http://localhost:${config.port}`;
         console.log(url);
         open(url, { url: true });
