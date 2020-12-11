@@ -1,5 +1,3 @@
-const { getExpectedPercentVariation } = require('./util');
-
 const report = (config, cryptos, stocks) => {
     let html =
     `<html>

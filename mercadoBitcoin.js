@@ -1,5 +1,4 @@
 const axios = require('axios');
-const { getAssetsQuotes } = require('./util');
 const Service = require('./Service');
 
 class MercadoBitcoin extends Service {
