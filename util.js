@@ -34,7 +34,7 @@ const getAssetWithVariation = asset => {
 }
 
 const assetToStr = (asset, onlyExpectedVariation) => {
-    const variation = onlyExpectedVariation ? ` (variation*: ${asset.variation}%` : '';
+    const variation = onlyExpectedVariation ? ` (variation: ${asset.variation}%` : '';
     return `${asset.ticker}: ${asset.quote}${variation}`;
 }
 
