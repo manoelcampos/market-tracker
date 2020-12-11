@@ -1,7 +1,8 @@
 const debug = require('debug')('tracker:tracking');
 const notify = require('./notify');
-const stockService = require('./yahooFinance');
-const cryptoService = require('./mercadoBitcoin');
+
+const stockService = require('./YahooFinance');
+const cryptoService = require('./MercadoBitcoin');
 const report = require('./report');
 
 let intervalTimeout
@@ -23,8 +24,8 @@ const getQuotes = async (config, showNotification, onlyExpectedVariation) => {
     debug(`Tracking ${config.cryptos.length} cryptocurrencies`);
 
     try{
-        const cryptos = await cryptoService.getCryptoQuotes(config, onlyExpectedVariation, showNotification);
-        const stocks = await stockService.getYahooFinanceQuotes(config, onlyExpectedVariation, showNotification);
+        const cryptos = await cryptoService.getQuotes(config, onlyExpectedVariation, showNotification);
+        const stocks = await stockService.getQuotes(config, onlyExpectedVariation, showNotification);
         if(config.notifyWhenNoExpectedVariation && !stocks.length && !cryptos.length) {
             notify('No expected variation in your assets');
         }
