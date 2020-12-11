@@ -1,4 +1,4 @@
-const config = require('./config');
+const config = require('./Config');
 const tracking = require('./tracking');
 const { getPort } = require('./util');
 const http = require('http');
