@@ -5,7 +5,6 @@ const { parseJson } = require('./util');
 
 const CONFIG_FILE_PATH = 'config.json';
 const CONFIG_FILE_OPTIONS = {encoding: "utf-8"};
-const DEFAULT_PERCENT_VARIATION = 10;
 
 const createConfigFile = (errorCallback) => {
     if(!fs.existsSync(CONFIG_FILE_PATH)){
@@ -44,7 +43,6 @@ const loadConfigFile = (callback, watch) => {
 module.exports = {
     CONFIG_FILE_PATH,
     CONFIG_FILE_OPTIONS,
-    DEFAULT_PERCENT_VARIATION,
     createConfigFile,
     loadConfigFile
 }

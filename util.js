@@ -1,6 +1,7 @@
 const debug = require('debug')('tracker:util');
 const notify = require('./notify');
 const open = require('open');
+const DEFAULT_PERCENT_VARIATION = 10;
 
 /**
  * Tries to parse a json string content
@@ -34,7 +35,7 @@ const getAssetWithVariation = asset => {
 }
 
 const assetToStr = (asset, onlyExpectedVariation) => {
-    const variation = onlyExpectedVariation ? ` (variation: ${asset.variation}%` : '';
+    const variation = onlyExpectedVariation ? ` (variation: ${asset.variation}%)` : '';
     return `${asset.ticker}: ${asset.quote}${variation}`;
 }
 
@@ -80,6 +81,7 @@ const getAssetsQuotes = async (paramObj, showNotification) => {
 
     return successAssets;
 }
+
 
 const isWindows = () => process.platform === 'win32';
 
