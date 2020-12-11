@@ -12,7 +12,8 @@ setup.createConfigFile(error => {
     notify(error);
 });
 
-const requestListener = async (config, req, res) => {
+let config
+const requestListener = async (req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'});
     const html = await tracking.getQuotes(config);
     res.write(html);
@@ -20,18 +21,19 @@ const requestListener = async (config, req, res) => {
 }
 
 let httpServer
-const startHttpServer = config => {
+const startHttpServer = () => {
     const PORT = getPort(config);
-    httpServer = http.createServer((req, res) => requestListener(config, req, res));
+    httpServer = http.createServer(requestListener);
     httpServer.listen(PORT, () => {
         const msg = PORT === 80 ? '' : `:${PORT}`;
         console.log(`Access the service at http://localhost${msg}\n`);
     });
 }
 
-setup.loadConfigFile((error, config) => {
+setup.loadConfigFile((error, newConfig) => {
+    config = newConfig
     if(config && !error && !httpServer?.listening){
-        startHttpServer(config);
+        startHttpServer();
     }
 
     tracking.schedule(error, config);
