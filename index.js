@@ -1,18 +1,8 @@
-const fs = require('fs');
-const axios = require('axios');
-const notify = require('./notify');
-const setup = require('./setup');
-const debug = require('debug')('tracker:index');
+const config = require('./config');
 const tracking = require('./tracking');
 const { getPort } = require('./util');
 const http = require('http');
 
-setup.createConfigFile(error => {
-    debug(error);
-    notify(error);
-});
-
-let config
 const requestListener = async (req, res) => {
     res.writeHead(200, {'Content-Type': 'text/html'});
     const html = await tracking.getQuotes(config);
@@ -30,9 +20,10 @@ const startHttpServer = () => {
     });
 }
 
-setup.loadConfigFile((error, newConfig) => {
-    config = newConfig
-    if(config && !error && !httpServer?.listening){
+config.createIfNonExistent();
+
+config.load((error) => {
+    if(!error && !httpServer?.listening){
         startHttpServer();
     }
 

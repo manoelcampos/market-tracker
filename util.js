@@ -1,23 +1,7 @@
 const debug = require('debug')('tracker:util');
 const notify = require('./notify');
 const open = require('open');
-const DEFAULT_PERCENT_VARIATION = 10;
-
-/**
- * Tries to parse a json string content
- * @param {string} jsonStr the json string to be parsed
- * @param {function} function a callback to be called when the json string is successfuly parsed.
- *                   That should accept (error, newConfig) parameters.
- *                   The newConfig represents the configuration object from the config file,
- *                   if it could be found and parsed correctly.
- */
-const parseJson = (jsonStr, callback) => {
-    try{
-        callback(null, JSON.parse(jsonStr));
-    } catch(error){
-        callback(error);
-    }
-}
+const { DEFAULT_PERCENT_VARIATION } = require('./config');
 
 const getExpectedPercentVariation = (asset, defaultExpectedPercentVariation) => {
     return asset.expectedPercentVariation || defaultExpectedPercentVariation || DEFAULT_PERCENT_VARIATION;
@@ -87,7 +71,6 @@ const isWindows = () => process.platform === 'win32';
 const getPort = config => config.port || (isWindows() ? 80 : 8080);
 
 module.exports = {
-    parseJson,
     getAssetsQuotes,
     getExpectedPercentVariation,
     getPort
