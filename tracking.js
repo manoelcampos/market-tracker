@@ -24,19 +24,19 @@ const getQuotes = async (config, showNotification, onlyExpectedVariation) => {
     debug(`Tracking ${config.cryptos.length} cryptocurrencies`);
 
     try{
-        const stocks = await stockService.getYahooFinanceQuotes(config, onlyExpectedVariation, showNotification);
         const cryptos = await cryptoService.getCryptoQuotes(config, onlyExpectedVariation, showNotification);
+        const stocks = await stockService.getYahooFinanceQuotes(config, onlyExpectedVariation, showNotification);
         if(config.notifyWhenNoExpectedVariation && !stocks.length && !cryptos.length) {
             notify('No expected variation in your assets');
         }
 
-        return generateReport(config, stocks, cryptos);
+        return generateReport(config, cryptos, stocks);
     } catch(error){
         debug(error);
     }
 }
 
-const generateReport = (config, stocks, cryptos) => {
+const generateReport = (config, cryptos, stocks) => {
     let html =
     `<html>
         <head>
@@ -59,8 +59,8 @@ const generateReport = (config, stocks, cryptos) => {
                     </tr>
                 </thead>
                 <tbody>
-                    ${assetsTableRows(config, stocks)}
                     ${assetsTableRows(config, cryptos)}
+                    ${assetsTableRows(config, stocks)}
                 </tbody>
             </table>
      </body>
