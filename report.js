@@ -37,7 +37,7 @@ const assetsTableRows = ( config, assets ) => assets.map(asset => assetTableRow(
 
 const assetTableRow = ( { defaultExpectedPercentVariation }, asset ) =>
     `<tr><td>${asset.ticker}</td><td>${asset.quote}</td><td>${asset.baseQuote || ''}</td>
-     <td>±${getExpectedPercentVariation(asset, defaultExpectedPercentVariation)}%</td><td>${asset.variation}%</td></tr>`;
+     <td>±${asset.getExpectedPercentVariation(defaultExpectedPercentVariation)}%</td><td>${asset.getVariation()}%</td></tr>`;
 
 
 module.exports = report

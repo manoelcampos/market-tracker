@@ -21,7 +21,8 @@ const getYahooFinanceQuote = async (stock) => {
         throw new Error(error);
     }
 
-    return {...stock, quote: result[0].financialData.currentPrice.raw};
+    stock.quote = result[0].financialData.currentPrice.raw;
+    return stock;
 }
 
 //TODO dá pra enviar uma lista de ativos para o YahooFinance

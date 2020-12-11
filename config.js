@@ -3,7 +3,6 @@ const notify = require('./notify');
 const debug = require('debug')('tracker:config');
 
 function Config() {
-    this.DEFAULT_PERCENT_VARIATION = 10;
     this.FILE_PATH = 'config.json';
     this.FILE_OPTIONS = {encoding: "utf-8"};
 

@@ -1,36 +1,16 @@
 const debug = require('debug')('tracker:util');
 const notify = require('./notify');
 const open = require('open');
-const { DEFAULT_PERCENT_VARIATION } = require('./config');
-
-const getExpectedPercentVariation = (asset, defaultExpectedPercentVariation) => {
-    return asset.expectedPercentVariation || defaultExpectedPercentVariation || DEFAULT_PERCENT_VARIATION;
-}; 
-
-const getActualAssetPercentVariation = asset => asset.quote/(asset.baseQuote || asset.quote) - 1;
-
-const hasMinQuoteVariation = (asset, defaultExpectedPercentVariation) => {
-    return Math.abs(getActualAssetPercentVariation(asset)) >= getExpectedPercentVariation(asset, defaultExpectedPercentVariation)/100.0;
-}
-
-const getAssetWithVariation = asset => {
-    asset.variation = Math.round(getActualAssetPercentVariation(asset)*100.0);
-    return asset;
-}
-
-const assetToStr = (asset, onlyExpectedVariation) => {
-    const variation = onlyExpectedVariation ? ` (variation: ${asset.variation}%)` : '';
-    return `${asset.ticker}: ${asset.quote}${variation}`;
-}
+const Asset = require('./Asset');
 
 /**
  * Gets the quotes for a list of assets such as stocks or cryptocurrencies
- * @param paramObj An object containing the method parameters, that should contains the fields below:
+ * @param paramObj An object with the method parameters, that should contain the fields below:
  * - {object} config The config object
  * - {array} assets An array of stocks or cryptocurrencies, as defined in the config file
  * - {string} assetType The type of the given assets (stocks, crypto, etc)
  * - {function} quoteFunction A function that receives an asset and returns its with a "quote" field
- *                                 containing its current quote
+ *                            containing its current quote
  * - {boolean} onlyExpectedVariation  Indicates to show only stocks with the expected variation
  *                                    on their quotes.
  */
@@ -38,12 +18,12 @@ const getAssetsQuotes = async (paramObj, showNotification) => {
     const { config, assets, assetType = "asset", quoteFunction, onlyExpectedVariation } = paramObj;
 
     const results = await Promise.allSettled(assets.map(asset => quoteFunction(asset)));
+    
     const successAssets =
         results.filter(res => res.status === 'fulfilled')
-            .map(res => res.value)
-            .filter(asset => onlyExpectedVariation ? hasMinQuoteVariation(asset, config.defaultExpectedPercentVariation) : true)
-            .map(getAssetWithVariation);
-
+            .map(res => new Asset(res.value))
+            .filter(asset => onlyExpectedVariation ? asset.hasMinQuoteVariation(config.defaultExpectedPercentVariation) : true);
+    
     const variationMsg = onlyExpectedVariation ? ' with desired variation' : '';
     debug(`Found ${successAssets.length} ${assetType} quotes${variationMsg}`);
     if(!successAssets.length || !showNotification){
@@ -51,7 +31,7 @@ const getAssetsQuotes = async (paramObj, showNotification) => {
     }
 
     const msg = successAssets
-                    .map(asset => assetToStr(asset, onlyExpectedVariation))
+                    .map(asset => asset.toString(onlyExpectedVariation))
                     .join('\n');
 
     const errors = assets.length - successAssets.length;
@@ -72,6 +52,5 @@ const getPort = config => config.port || (isWindows() ? 80 : 8080);
 
 module.exports = {
     getAssetsQuotes,
-    getExpectedPercentVariation,
     getPort
 }
