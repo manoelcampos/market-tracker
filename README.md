@@ -117,3 +117,8 @@ below.
 ```
 
 When you update the config file and save, it's reloaded automatically.
+
+
+## 5. License
+
+This project is intended for non-commercial use and is protected by the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](LICENSE).
