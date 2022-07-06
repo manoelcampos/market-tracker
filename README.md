@@ -24,6 +24,8 @@ You just need at least [Node.js 15](http://nodejs.org) installed.
 
 ## 2. Download
 
+You can download the source code to run the app in two different ways:
+
 ### 2.1 Using git
 
 You can clone the project using the following command:
@@ -43,7 +45,7 @@ You can simply download it as a [zip file here](https://github.com/manoelcampos/
 # Install dependencies
 npm install
 
-# Run the app in background
+# Start the server
 npm start &
 ```
 
