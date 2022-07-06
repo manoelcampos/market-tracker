@@ -32,12 +32,6 @@ You can clone the project using the following command:
 git clone https://github.com/manoelcampos/market-tracker.git
 ```
 
-This way, you can update the sources just using:
-
-```bash
-git pull
-```
-
 ### 2.2 Geting a zip file
 
 You can simply download it as a [zip file here](https://github.com/manoelcampos/market-tracker/archive/master.zip).
