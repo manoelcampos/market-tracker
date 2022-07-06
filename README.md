@@ -20,7 +20,7 @@ the notification.
 
 ## 1. Requirements
 
-You just need [Node.js 15](http://nodejs.org) installed.
+You just need at least [Node.js 15](http://nodejs.org) installed.
 
 ## 2. Download
 
