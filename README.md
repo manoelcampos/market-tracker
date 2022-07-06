@@ -53,6 +53,9 @@ npm install
 npm start &
 ```
 
+The terminal shows how to open the application in the browser.
+By default, the address is http://localhost:8080
+
 ## 4. Configuration
 
 The [config.json](config.json.dist) file has the following structure that is explained
