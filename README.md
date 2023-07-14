@@ -1,7 +1,7 @@
 # Market Tracker
 
-| Starting up  | Asset quote change  |
-|---|---|
+| Starting up             | Asset quote change      |
+|-------------------------|-------------------------|
 | ![](macos-preview1.png) | ![](macos-preview2.png) |
 
 A Node.js console application to track market assets,
