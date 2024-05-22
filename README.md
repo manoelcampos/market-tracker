@@ -4,7 +4,7 @@
 |-------------------------|-------------------------|
 | ![](macos-preview1.png) | ![](macos-preview2.png) |
 
-A Node.js console application to track market assets,
+A Node.js desktop application to track market assets,
 currently including stocks and cryptocurrencies.
 It works for Windows, Linux and macOS.
 
